@@ -1,0 +1,20 @@
+# Docker起動コマンド
+docker-compose up -d
+
+# Docker停止コマンド
+docker-compose down --rmi all
+
+# Docker再起動コマンド
+docker-compose restart
+
+# Dockerイメージに接続
+docker-compose exec php bash
+
+#　トラブル対策
+・DBのデータを初期化したい
+ Dockerを停止してから、sourcesのmysqlフォルダにあるdataフォルダをまるごと削除します。
+ 削除したら、Docker起動コマンドを入力してください。
+
+・PHPプログラムが動かない
+ docker-compose ps　コマンドで起動中のDockerを確認しましょう。
+ nginxというのが起動していなければ、Docker起動コマンドを再度入力してみてください。

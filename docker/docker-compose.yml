@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ../src:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php
+    links:
+      - php
+
+  php:
+    build: ./php
+    volumes:
+      - ../src:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    build: ./mysql
+    ports:
+      - 13306:3306
+    volumes:
+      # DB data persistence
+      - ./mysql/data:/var/lib/mysql
+      # DB initialize data
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: --innodb-use-native-aio=0
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - 8888:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    depends_on:
+      - db
+    links:
+      - db
+
+  
+
